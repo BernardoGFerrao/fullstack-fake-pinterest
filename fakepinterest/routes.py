@@ -13,7 +13,7 @@ def homepage():
         usuario = Usuario.query.filter_by(email=formlogin.email.data).first()
         if usuario and bcrypt.check_password_hash(usuario.senha, formlogin.senha.data):#Se existe um usuário com esse email e a senha digitada no formulario coincide com a do db
             login_user(usuario)
-            return redirect(url_for('perfil', usuario=usuario))
+            return redirect(url_for('perfil', id_usuario=usuario.id))
     return render_template('homepage.html', form=formlogin)
 
 @app.route('/criarconta', methods=['GET', 'POST'])
@@ -31,15 +31,20 @@ def criarconta():
         #Fazer o login do usuário:
         login_user(usuario, remember=True)
         #Redirecionar o usuário:
-        return redirect(url_for('perfil', usuario=usuario.username))
+        return redirect(url_for('perfil', id_usuario=usuario.id))
     return render_template('criarconta.html', form=formcriarconta)
 
 
 #Para não precisar criar uma rota para cada pessoa -> Páginas dinâmicas
-@app.route(f'/perfil/<usuario>')
+@app.route(f'/perfil/<id_usuario>')
 @login_required
-def perfil(usuario):
-    return render_template('perfil.html', usuario=usuario)#render template permite conversar com o html
+def perfil(id_usuario):
+    if id_usuario == current_user.id:
+        #O usuário está no seu perfil
+        return render_template('perfil.html', usuario=current_user)#render template permite conversar com o html
+    else:
+        usuario = Usuario.query.get(int(id_usuario))
+        return render_template('perfil.html', usuario=usuario)#render template permite conversar com o html
 
 @app.route('/logout')
 @login_required
