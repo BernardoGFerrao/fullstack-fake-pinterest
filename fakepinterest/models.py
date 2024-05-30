@@ -1,17 +1,20 @@
 #Onde vamos criar a estrutura do banco de dados
 from sqlalchemy.testing.pickleable import User
 from datetime import datetime
+from fakepinterest import database, login_manager
+from flask_login import UserMixin#Diz qual classe gerencia os logins
 
-from fakepinterest import database
+@login_manager.user_loader
+def load_usuario(id_usuario):
+    return Usuario.query.get(id_usuario)#Busca no banco o usuário com o id correspondente
 
 #Criação das tabelas
-class Usuario(database.Model):
+class Usuario(database.Model, UserMixin):
         id = database.Column(database.Integer, primary_key=True)
         username = database.Column(database.String, nullable=False, unique=True)
         email = database.Column(database.String, nullable=False, unique=True)
         senha = database.Column(database.String, nullable=False)
         fotos = database.relationship("Post", backref='usuario', lazy=True)#É como se fosse um ponteiro para as fotos, lazy -> Otimiza o processo de buscas num banco de dados
-
 
 class Post(database.Model):
     id = database.Column(database.Integer, primary_key=True)
