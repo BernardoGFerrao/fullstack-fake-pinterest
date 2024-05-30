@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <title>{% block title %}FakePinterest{% endblock %}</title>
 </head>
-<body>
 {% block body %}
+<body>
 <h1>Fake Pinterest - Home page</h1>
 <h2>Continuação...</h2>
+
+{% block form %}
+<form method="POST">
+    {{ form.csrf_token }}
+
+    {{ form.email.label()}}
+    {{ form.email()}}
+
+    {{ form.senha.label()}}
+    {{ form.senha()}}
+
+    {{form.botao_login}}
+
+</form>
 {% endblock %}
+
 </body>
+{% endblock %}
 </html>
