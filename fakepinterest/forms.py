@@ -13,7 +13,7 @@ class FormCriarConta(FlaskForm):
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     username = StringField('Usuario', validators=[DataRequired()])
     senha = PasswordField('Senha', validators=[DataRequired(), Length(6, 20)])
-    confirmacao_senha = PasswordField('Confirme a senha',validators=[DataRequired(), EqualTo('senha')])
+    confirmacao_senha = PasswordField('Confirme a senha', validators=[DataRequired(), EqualTo('senha')])
     botao_criar_conta = SubmitField('Criar Conta')
 
     def validate_email(self, email):
