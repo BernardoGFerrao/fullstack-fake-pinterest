@@ -23,7 +23,7 @@ def criarconta():
     formcriarconta = FormCriarConta()
     if formcriarconta.validate_on_submit():#Se o usuário clicar no botão e as informações estiverem preenchidas:
         #Criar um objeto do tipo Usuário:
-        senha = bcrypt.generate_password_hash(formcriarconta.senha.data)#Criptografa a senha do usuário
+        senha = bcrypt.generate_password_hash(formcriarconta.senha.data).decode("utf-8")#Criptografa a senha do usuário
         usuario = Usuario(username=formcriarconta.username.data,
                           email=formcriarconta.email.data,
                           senha=senha)
