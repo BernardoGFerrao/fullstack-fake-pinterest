@@ -2,8 +2,10 @@
 from flask import render_template, url_for, redirect
 from fakepinterest import app, database, bcrypt
 from flask_login import login_required, login_user, logout_user, current_user
-from fakepinterest.forms import FormLogin, FormCriarConta
+from fakepinterest.forms import FormLogin, FormCriarConta, FormFoto
 from fakepinterest.models import Usuario, Post
+import os
+from werkzeug.utils import secure_filename
 
 @app.route('/', methods=['GET', 'POST'])
 #Criando uma rota(Caminho para o link do site)( / -> Homepage)
@@ -36,15 +38,29 @@ def criarconta():
 
 
 #Para não precisar criar uma rota para cada pessoa -> Páginas dinâmicas
-@app.route(f'/perfil/<id_usuario>')
+@app.route(f'/perfil/<id_usuario>', methods=['GET', 'POST'])
 @login_required
 def perfil(id_usuario):
-    if id_usuario == current_user.id:
+    if int(id_usuario) == int(current_user.id):
         #O usuário está no seu perfil
-        return render_template('perfil.html', usuario=current_user)#render template permite conversar com o html
+        #Postar fotos
+        form_foto = FormFoto()
+        if form_foto.validate_on_submit():
+            arquivo = form_foto.foto.data
+            #Filtro de nomes
+            nome_seguro = secure_filename(arquivo.filename)
+            #Salvar o arquivo na pasta fotos_post
+            caminho = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                              app.config['UPLOAD_FOLDER'], nome_seguro)
+            arquivo.save(caminho )
+            #Registrar no db
+            post = Post(imagem=nome_seguro, id_usuario=current_user.id)
+            database.session.add(post)
+            database.session.commit()
+        return render_template('perfil.html', usuario=current_user, form=form_foto)#render template permite conversar com o html
     else:
         usuario = Usuario.query.get(int(id_usuario))
-        return render_template('perfil.html', usuario=usuario)#render template permite conversar com o html
+        return render_template('perfil.html', usuario=usuario, form=None)#render template permite conversar com o html
 
 @app.route('/logout')
 @login_required
