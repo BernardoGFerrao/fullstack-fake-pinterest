@@ -1,16 +1,21 @@
 {%extends "homepage.html" %}
 
 {% block body %}
-<body>
+
 {% include "navbar.html" %}
 
-<h1>Feed principal</h1>
 
-{% for foto in fotos %}
-<a href="{{ url_for('perfil', id_usuario=foto.id_usuario)  }}">
-<img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }} ">
-</a>
-{% endfor %}
+  <body>
+    <div class="container">
+      <div class="conteudo">
+    {% for foto in fotos %}
+        <a class="bloco-imagem" href="{{ url_for('perfil', id_usuario=foto.id_usuario)  }}">
+          <img src="{{ url_for('static', filename='fotos_posts/{}'.format(foto.imagem)) }}" alt="Pinterest 1" />
+        </a>
+    {% endfor %}
+      </div>
+    </div>
+  </body>
 
-</body>
+
 {% endblock %}
