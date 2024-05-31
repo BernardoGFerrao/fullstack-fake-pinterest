@@ -13,7 +13,7 @@ def homepage():
     formlogin = FormLogin()
     if formlogin.validate_on_submit():#Se o usuário preencheu o login e está válido:
         usuario = Usuario.query.filter_by(email=formlogin.email.data).first()
-        if usuario and bcrypt.check_password_hash(usuario.senha, formlogin.senha.data):#Se existe um usuário com esse email e a senha digitada no formulario coincide com a do db
+        if usuario and bcrypt.check_password_hash(usuario.senha.encode("utf-8"), formlogin.senha.data):#Se existe um usuário com esse email e a senha digitada no formulario coincide com a do db
             login_user(usuario)
             return redirect(url_for('perfil', id_usuario=usuario.id))
     return render_template('homepage.html', form=formlogin)
