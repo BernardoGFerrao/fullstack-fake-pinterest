@@ -52,7 +52,7 @@ def perfil(id_usuario):
             #Salvar o arquivo na pasta fotos_post
             caminho = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                               app.config['UPLOAD_FOLDER'], nome_seguro)
-            arquivo.save(caminho )
+            arquivo.save(caminho)
             #Registrar no db
             post = Post(imagem=nome_seguro, id_usuario=current_user.id)
             database.session.add(post)
