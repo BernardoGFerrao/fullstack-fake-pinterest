@@ -62,6 +62,12 @@ def perfil(id_usuario):
         usuario = Usuario.query.get(int(id_usuario))
         return render_template('perfil.html', usuario=usuario, form=None)#render template permite conversar com o html
 
+@app.route('/feed')
+@login_required
+def feed():
+    fotos = Post.query.order_by(Post.data_criacao.desc()).all()
+    return render_template('feed.html', fotos=fotos)
+
 @app.route('/logout')
 @login_required
 def logout():
